@@ -78,6 +78,7 @@ def return_full_url(url, sub=False, slow_mode=False):
         
         if len(result) > 0:
             return result
+        
         return None
 
     if result is None:
@@ -171,14 +172,14 @@ def playWithVLC(url, sub, width="", height="", new_log=False):
     setState("1")
     if sub:
         os.system(
-            "vlc '" + url + "'" +
+            "cvlc '" + url + "'" + " --intf qt" +
             " --sub-file subtitle.srt < /tmp/cmd"
         )
     elif url is None:
         pass
     else:
         os.system(
-            "vlc '" + url + "'" + " < /tmp/cmd"
+            "cvlc '" + url + "'" + " --intf qt" + " < /tmp/cmd"
         )
 
     if getState() != "2":  # In case we are again in the launchvideo function

@@ -58,28 +58,30 @@ def return_full_url(url, sub=False, slow_mode=False):
         logger.debug('Direct video URL, no need to use youtube-dl.')
         return url
 
-    ydl = youtube_dl.YoutubeDL(
-        {
-            'logger': logger,
-            'noplaylist': True,
-            'ignoreerrors': True,
-        }
-    )  # Ignore errors in case of error in long playlists
+    logger.debug("Parsing source url for "+url+" with subs :"+str(sub))
+
+    # ydl = youtube_dl.YoutubeDL(
+    #     {
+    #         'logger': logger,
+    #         'noplaylist': True,
+    #         'ignoreerrors': True,
+    #     }
+    # )  # Ignore errors in case of error in long playlists
     
-    try:
-        with ydl:  # Downloading youtub-dl infos. We just want to extract the info
-            result = ydl.extract_info(url, download=False)
-    except:
-        result = subprocess.run(
-            ["yt-dlp", "--get-url", url],
-            capture_output = True, # Python >= 3.7 only
-            text = True
-        ).stdout.split(" ")[0]
+    # try:
+    #     with ydl:  # Downloading youtub-dl infos. We just want to extract the info
+    #         result = ydl.extract_info(url, download=False)
+    # except:
+    result = subprocess.run(
+        ["yt-dlp", "--get-url", url],
+        capture_output = True, # Python >= 3.7 only
+        text = True
+    ).stdout.split("\n")[0]
+    logger.error(result)
         
-        if len(result) > 0:
-            return result
-        
-        return None
+    if len(result) > 0:
+        return result
+            
 
     if result is None:
         logger.error(

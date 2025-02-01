@@ -3,6 +3,7 @@ import os
 import threading
 import logging
 import json
+import subprocess
 logger = logging.getLogger("RaspberryCast")
 volume = 0
 
@@ -62,9 +63,22 @@ def return_full_url(url, sub=False, slow_mode=False):
             'logger': logger,
             'noplaylist': True,
             'ignoreerrors': True,
-        })  # Ignore errors in case of error in long playlists
-    with ydl:  # Downloading youtub-dl infos. We just want to extract the info
-        result = ydl.extract_info(url, download=False)
+        }
+    )  # Ignore errors in case of error in long playlists
+    
+    try:
+        with ydl:  # Downloading youtub-dl infos. We just want to extract the info
+            result = ydl.extract_info(url, download=False)
+    except:
+        result = subprocess.run(
+            ["yt-dlp", "--get-url", url],
+            capture_output = True, # Python >= 3.7 only
+            text = True
+        ).stdout.split(" ")[0]
+        
+        if len(result) > 0:
+            return result
+        return None
 
     if result is None:
         logger.error(
@@ -255,3 +269,5 @@ def setVolume(vol):
         volume += 300
     if vol == "less":
         volume -= 300
+
+

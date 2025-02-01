@@ -32,7 +32,7 @@ def log(output):
 
     file.write(time.strftime('%a %H:%M:%S') + "  " + output + "\n")
     file.close()
-    print output
+    print(output)
 
 # Catch SIGINT via Ctrl + C
 signal.signal(signal.SIGINT, signal_handler)
